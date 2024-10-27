@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesan Bucin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('bucinn.jpeg');
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            width: 350px;
+            animation: zoomInOut 2s infinite alternate;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+
+        @keyframes zoomInOut {
+            0% {
+                transform: scale(0.95);
+            }
+            100% {
+                transform: scale(1.05);
+            }
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #ff69b4;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #ff69b4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #ff1493;
+            transform: scale(1.1);
+        }
+
+        #timer {
+            font-size: 24px;
+            color: #ff69b4;
+            margin: 10px 0;
+        }
+
+        .heart {
+            color: red;
+            font-size: 24px;
+            animation: beat 1s infinite;
+        }
+
+        @keyframes beat {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles.js Container -->
+    <div id="particles-js"></div>
+
+    <audio id="bgMusic" loop>
+        <source src="sad song.mpeg" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div id="slide1" class="slide active">
+            <h2 class="floating">Hai Sayang <span class="heart">❤️</span></h2>
+            <p>Masukkan nama kamu ya:</p>
+            <input type="text" id="nama" placeholder="Tulis nama kamu...">
+            <button onclick="nextSlide()">Lanjut</button>
+        </div>
+
+        <div id="slide2" class="slide">
+            <h2 class="floating">Hai <span id="namaDisplay"></span></h2>
+            <p>Kamu kangen sama aku ga?</p>
+            <button onclick="pilihKangen(true)">Kangen 🥺</button>
+            <button onclick="pilihKangen(false)">Ngga 😒</button>
+        </div>
+
+        <div id="slide3" class="slide">
+            <h2 class="floating">Dengerin dulu musiknya ya...</h2>
+            <div id="timer">30</div>
+            <p>Tunggu sebentar yaa...</p>
+        </div>
+    </div>
+
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Particles.js Config
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 50,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ff69b4"
+                },
+                "shape": {
+                    "type": "heart"
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false
+                    }
+                },
+                "size": {
+                    "value": 5,
+                    "random": true,
+                    "anim": {
+                        "enable": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ff69b4",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "repulse": {
+                        "distance": 100,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+        let currentSlide = 1;
+        let nama = '';
+        
+        function startMusic() {
+            const music = document.getElementById('bgMusic');
+            music.play();
+        }
+
+        function nextSlide() {
+            nama = document.getElementById('nama').value;
+            if (nama.trim() === '') {
+                alert('Isi dulu namanya ya...');
+                return;
+            }
+            document.getElementById('namaDisplay').textContent = nama;
+            showSlide(2);
+            startMusic();
+        }
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            document.getElementById('slide' + n).classList.add('active');
+            currentSlide = n;
+        }
+
+        function pilihKangen(isKangen) {
+            showSlide(3);
+            let timeLeft = 30;
+            
+            const timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    const message = isKangen ? 
+                        `Hai sayang, aku juga kangen banget sama kamu ${nama} 🥰` :
+                        `Masa sih ga kangen? Aku kangen banget sama kamu ${nama} 😔`;
+                    
+                    // Redirect ke WhatsApp
+                    window.location.href = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                }
+            }, 1000);
+        }
+
+        // Mulai musik saat ada interaksi pertama
+        document.body.addEventListener('click', function() {
+            const music = document.getElementById('bgMusic');
+            if (music.paused) {
+                music.play();
+            }
+        }, { once: true });
+    </script>
+</body>
+</html>
